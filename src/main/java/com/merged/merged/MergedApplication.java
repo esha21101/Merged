@@ -16,8 +16,4 @@ public class MergedApplication {
 	}
 
 
-	@GetMapping("/api/hello")
-	public String hello() {
-		return "Merged backend is alive!";
-	}
 }
