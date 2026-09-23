@@ -55,4 +55,15 @@ public ClaimedIssue claimIssue(Issue issue) {
 
     return claimedIssueRepository.save(claimed);
 }
+public List<ClaimedIssue> getAllClaimedIssues() {
+    return claimedIssueRepository.findAll();
+}
+
+public ClaimedIssue submitPrLink(Long id, String prLink) {
+    ClaimedIssue claimed = claimedIssueRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Claimed issue not found with id: " + id));
+
+    claimed.setPrLink(prLink);
+    return claimedIssueRepository.save(claimed);
+}
 }
