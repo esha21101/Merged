@@ -5,6 +5,9 @@ import com.merged.merged.service.GitHubService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.merged.merged.model.ClaimedIssue;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -21,4 +24,9 @@ public class IssueController {
     public List<Issue> getIssues(@RequestParam String language) {
         return gitHubService.findGoodFirstIssues(language);
     }
+
+    @PostMapping("/api/claim")
+public ClaimedIssue claimIssue(@RequestBody Issue issue) {
+    return gitHubService.claimIssue(issue);
+}
 }

@@ -9,6 +9,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import com.merged.merged.model.ClaimedIssue;
+import com.merged.merged.repository.ClaimedIssueRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import java.time.LocalDateTime;
 
 import java.util.List;
 
@@ -39,4 +43,16 @@ public class GitHubService {
 
         return response.getBody().getItems();
     }
+    @Autowired
+private ClaimedIssueRepository claimedIssueRepository;
+
+public ClaimedIssue claimIssue(Issue issue) {
+    ClaimedIssue claimed = new ClaimedIssue();
+    claimed.setIssueTitle(issue.getTitle());
+    claimed.setIssueUrl(issue.getHtmlUrl());
+    claimed.setRepositoryUrl(issue.getRepositoryUrl());
+    claimed.setClaimedAt(LocalDateTime.now());
+
+    return claimedIssueRepository.save(claimed);
+}
 }
