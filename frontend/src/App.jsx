@@ -5,6 +5,7 @@ function App() {
   const [issues, setIssues] = useState([])
   const [loading, setLoading] = useState(false)
   const [claimedIssues, setClaimedIssues] = useState([])
+  const [prLinkInput, setPrLinkInput] = useState('')
 
   const findIssues = async () => {
     setLoading(true)
@@ -45,6 +46,22 @@ function App() {
     }
   }
 
+  const submitPrLink = async (claimedId) => {
+  try {
+    await fetch(`http://localhost:8080/api/claimed/${claimedId}/submit-pr`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prLink: prLinkInput })
+    })
+    alert('PR link submitted!')
+    setPrLinkInput('')
+    loadClaimedIssues()
+  } catch (error) {
+    console.error('Failed to submit PR link:', error)
+  }
+}
+
+
   return (
     <div>
       <h1>Merged</h1>
@@ -75,10 +92,21 @@ function App() {
       <h2>My Claimed Issues</h2>
       <button onClick={loadClaimedIssues}>Refresh Claimed Issues</button>
 
-      <ul>
+            <ul>
         {claimedIssues.map((claimed) => (
           <li key={claimed.id}>
-            {claimed.issueTitle} — {claimed.prLink ? 'PR submitted' : 'No PR yet'}
+            {claimed.issueTitle} — {claimed.prLink ? `PR: ${claimed.prLink}` : 'No PR yet'}
+            {!claimed.prLink && (
+              <>
+                <input
+                  type="text"
+                  placeholder="Paste PR link"
+                  value={prLinkInput}
+                  onChange={(e) => setPrLinkInput(e.target.value)}
+                />
+                <button onClick={() => submitPrLink(claimed.id)}>Submit PR</button>
+              </>
+            )}
           </li>
         ))}
       </ul>
