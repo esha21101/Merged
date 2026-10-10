@@ -4,6 +4,7 @@ function App() {
   const [language, setLanguage] = useState('java')
   const [issues, setIssues] = useState([])
   const [loading, setLoading] = useState(false)
+  const [claimedIssues, setClaimedIssues] = useState([])
 
   const findIssues = async () => {
     setLoading(true)
@@ -34,6 +35,16 @@ function App() {
     }
   }
 
+    const loadClaimedIssues = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/claimed')
+      const data = await response.json()
+      setClaimedIssues(data)
+    } catch (error) {
+      console.error('Failed to load claimed issues:', error)
+    }
+  }
+
   return (
     <div>
       <h1>Merged</h1>
@@ -49,13 +60,25 @@ function App() {
 
       {loading && <p>Loading...</p>}
 
-      <ul>
+            <ul>
         {issues.map((issue) => (
           <li key={issue.html_url}>
             <a href={issue.html_url} target="_blank" rel="noreferrer">
               {issue.title}
             </a>
             <button onClick={() => claimIssue(issue)}>Claim</button>
+          </li>
+        ))}
+      </ul>
+
+      <hr />
+      <h2>My Claimed Issues</h2>
+      <button onClick={loadClaimedIssues}>Refresh Claimed Issues</button>
+
+      <ul>
+        {claimedIssues.map((claimed) => (
+          <li key={claimed.id}>
+            {claimed.issueTitle} — {claimed.prLink ? 'PR submitted' : 'No PR yet'}
           </li>
         ))}
       </ul>
