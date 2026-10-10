@@ -17,6 +17,23 @@ function App() {
     setLoading(false)
   }
 
+  const claimIssue = async (issue) => {
+    try {
+      await fetch('http://localhost:8080/api/claim', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: issue.title,
+          html_url: issue.html_url,
+          repository_url: issue.repository_url
+        })
+      })
+      alert('Issue claimed!')
+    } catch (error) {
+      console.error('Failed to claim issue:', error)
+    }
+  }
+
   return (
     <div>
       <h1>Merged</h1>
@@ -38,6 +55,7 @@ function App() {
             <a href={issue.html_url} target="_blank" rel="noreferrer">
               {issue.title}
             </a>
+            <button onClick={() => claimIssue(issue)}>Claim</button>
           </li>
         ))}
       </ul>
